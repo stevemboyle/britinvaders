@@ -10,7 +10,7 @@
 //---------------------------------------------------------------------
 
   function init() {
-    if (game.init() ){
+    if ( game.init() ) {
       game.start();
     }
   }
@@ -29,7 +29,7 @@
     // Ensure the images have loaded before the game begins.
     var numImages = 3;
     var numLoaded = 0;
-    function imageLoaded(){
+    function imageLoaded() {
       numLoaded++;
       if ( numLoaded === numImages ) {
         window.init();
@@ -40,7 +40,7 @@
       imageLoaded();
     };
 
-    this.spaceship .onload = function() {
+    this.spaceship.onload = function() {
       imageLoaded();
     };
 
@@ -126,11 +126,14 @@
 
     // Move and draw the bullet until it moves off-screen.
     this.draw = function() {
+      console.log('bullet draw');
       this.context.clearRect(this.x, this.y, this.width, this.height);
       this.y -= this.speed;
-      if (this.y <= 0 - this.height ) {
+      if ( this.y <= 0 - this.height ) {
+        console.log('hello');
         return true;
       } else {
+        console.log("draw image");
         this.context.drawImage(imageRepository.bullet, this.x, this.y);
       }
     };
@@ -158,7 +161,7 @@
     // Our pool
     var pool = [];
 
-    this. init = function() {
+    this.init = function() {
       for ( var i = 0; i < size; i++ ) {
 
         // Initialize a new bullet.
@@ -217,7 +220,7 @@
     this.bulletPool = new Pool(30);
     this.bulletPool.init();
 
-    var fireRate =15;
+    var fireRate = 15;
     var counter = 0;
 
     this.draw = function() {
@@ -283,13 +286,12 @@
         counter = 0;
       }
 
-
     };
 
     // Fire two!
     this.fire = function() {
-      this.bulletPool.getTwo( this.x + 6, this.y, 3,
-                              this.x + 33, this.y, 3 );
+      this.bulletPool.getTwo( (this.x + 6), this.y, 3,
+                              (this.x + 33), this.y, 3 );
     };
 
   }
