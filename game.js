@@ -126,14 +126,11 @@
 
     // Move and draw the bullet until it moves off-screen.
     this.draw = function() {
-      console.log('bullet draw');
       this.context.clearRect(this.x, this.y, this.width, this.height);
       this.y -= this.speed;
       if ( this.y <= 0 - this.height ) {
-        console.log('hello');
         return true;
       } else {
-        console.log("draw image");
         this.context.drawImage(imageRepository.bullet, this.x, this.y);
       }
     };
@@ -199,7 +196,7 @@
     this.animate = function() {
       for ( var i = 0; i < size; i++ ){
         if ( pool[i].alive ) {
-          if ( pool[i].draw ) {
+          if ( pool[i].draw() ) {
             pool[i].clear();
             pool.push((pool.splice(i, 1))[0]);
           }
