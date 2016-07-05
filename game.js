@@ -84,10 +84,18 @@
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
+    // Collision Logic
+    this.collidableWith = "";
+    this.isColliding = false;
+    this.type = "";
+
     // This abstract function will be implemented in child objects.
     this.draw = function() {
     };
     this.move = function() {
+    };
+    this.isCollidableWith = function(object) {
+      return ( this.collidableWith === object.type );
     };
   }
 
@@ -141,16 +149,29 @@
     this.draw = function() {
       this.context.clearRect(this.x, this.y, this.width, this.height);
       this.y -= this.speed;
-      if ( self === "bullet" && this.y <= 0 - this.height ) {
+
+      if ( this.isColliding ) {
         return true;
-      } else if ( self === "enemyBullet" && this.y >= this.canvasHeight ) {
+      }
+
+      else if ( self === "bullet" && this.y <= 0 - this.height ) {
         return true;
-      } else {
+      }
+
+      else if ( self === "enemyBullet" && this.y >= this.canvasHeight ) {
+        return true;
+      }
+
+      else {
+
         if ( self === "bullet" ) {
           this.context.drawImage(imageRepository.bullet, this.x, this.y);
-        } else if ( self === "enemyBullet" ) {
+        }
+
+        else if ( self === "enemyBullet" ) {
           this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
         }
+
         return false;
       }
     };
@@ -161,6 +182,7 @@
       this.y = 0;
       this.speed = 0;
       this.alive = false;
+      this.isColliding = false;
     };
   }
 
@@ -190,6 +212,9 @@
           bullet.init(0, 0, imageRepository.bullet.width,
                             imageRepository.bullet.height);
 
+          bullet.collidableWith = "enemy";
+          bullet.type = "bullet";
+
           // Place the bullet in the pool.
           pool[i] = bullet;
         }
@@ -218,12 +243,25 @@
           bullet.init(0, 0, imageRepository.enemyBullet.width,
                             imageRepository.enemyBullet.height);
 
+          bullet.collidableWith = "ship";
+          bullet.type = "enemyBullet";
+
           // Place the bullet in the pool.
           pool[i] = bullet;
         }
 
       }
 
+    };
+
+    this.getPool = function() {
+      var object = [];
+      for ( var i = 0; i < size; i++ ) {
+        if ( pool[i].alive ) {
+          object.push(pool[i]);
+        }
+      }
+      return object;
     };
 
     // Gets the last item in the list.
@@ -327,7 +365,9 @@
         }
 
         // Redraw the ship.
-        this.draw();
+        if ( !this.isColliding ) {
+          this.draw();
+        }
 
       }
 
@@ -357,6 +397,8 @@
     var percentFire = .01;
     var chance = 0;
     this.alive = false;
+    this.collidableWith = "bullet";
+    this.type = "enemy";
 
     this.spawn = function(x, y, speed) {
       this.x = x;
@@ -377,22 +419,35 @@
 
       if ( this.x <= this.leftEdge ) {
         this.speedX = this.speed;
-      } else if ( this.x >= this.rightEdge + this.width ) {
+      }
+
+      else if ( this.x >= this.rightEdge + this.width ) {
         this.speedX = -this.speed;
-      } else if ( this.y >= this.bottomEdge ) {
+      }
+
+      else if ( this.y >= this.bottomEdge ) {
         this.speed = 1.5;
         this.speedY = 0;
         this.y -= 5;
         this.speedX = -this.speed;
       }
 
-      this.context.drawImage(imageRepository.enemy, this.x, this.y);
+      if ( !this.Colliding ){
+        this.context.drawImage(imageRepository.enemy, this.x, this.y);
 
-      // Every movement, there is a chance the enemy will shoot:
-      chance = Math.floor( Math.random() * 101 );
-      if ( chance/100 < percentFire ) {
-        this.fire();
+        // Every movement, there is a chance the enemy will shoot:
+        chance = Math.floor( Math.random() * 101 );
+        if ( chance/100 < percentFire ) {
+          this.fire();
+        }
+
+        return false;
       }
+
+      else {
+        return true;
+      }
+
     };
 
     this.fire = function() {
