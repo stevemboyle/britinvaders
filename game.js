@@ -143,12 +143,12 @@
       this.y -= this.speed;
       if ( self === "bullet" && this.y <= 0 - this.height ) {
         return true;
-      } else if ( self === "enemy bullet" && this.y >= this.canvasHeight ) {
+      } else if ( self === "enemyBullet" && this.y >= this.canvasHeight ) {
         return true;
       } else {
         if ( self === "bullet" ) {
           this.context.drawImage(imageRepository.bullet, this.x, this.y);
-        } else if ( self === "enemy bullet" ) {
+        } else if ( self === "enemyBullet" ) {
           this.context.drawImage(imageRepository.enemyBullet, this.x, this.y);
         }
         return false;
