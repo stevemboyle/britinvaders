@@ -62,7 +62,7 @@
       this.context.drawImage(imageRepository.background, this.x, this.y);
 
       // We draw another image at the top edge of the first image.
-      this.context.drawImage(imageReposity.background, this.x, this.y = this.canvasHeight);
+      this.context.drawImage(imageRepository.background, this.x, this.y - this.canvasHeight);
 
       // Reset if the image scrolls off the screen.
       if ( this.y >= this.canvasHeight ) {
