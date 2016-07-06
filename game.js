@@ -817,20 +817,7 @@
 
        this.enemyPool = new Pool(30);
        this.enemyPool.init("enemy");
-       var height = imageRepository.enemy.height;
-       var width = imageRepository.enemy.width;
-       var x = 100;
-       var y = -height;
-       var spacer = y * 1.5;
-
-       for ( var i = 1; i <= 18; i++ ) {
-         this.enemyPool.get( x, y, 2 );
-         x += width + 25;
-         if ( i % 6 === 0 ) {
-           x = 100;
-           y += spacer;
-         }
-       }
+       this.spawnWave();
 
        this.enemyBulletPool = new Pool(50);
        this.enemyBulletPool.init("enemyBullet");
@@ -846,6 +833,23 @@
 
        // Return false if the canvas is not supported.
        return false;
+     }
+   };
+
+   // Spawn new enemies
+   this.spawnWave = function() {
+     var height = imageRepository.enemy.height;
+     var width = imageRepository.enemy.width;
+     var x = 100;
+     var y = -height;
+     var spacer = y * 1.5;
+     for ( var i = 1; i <= 18; i++ ) {
+       this.enemyPool.get( x, y, 2 );
+       x += width + 25;
+       if ( i % 6 === 0 ) {
+         x = 100;
+         y += spacer;
+       }
      }
    };
 
@@ -873,7 +877,13 @@
     game.quadTree.insert(game.ship.bulletPool.getPool());
     game.quadTree.insert(game.enemyPool.getPool());
     game.quadTree.insert(game.enemyBulletPool.getPool());
+
     detectCollision();
+
+    // If we're out of enemies, spawn more!
+    if ( game.enemyPool.getPool().length === 0 ) {
+      game.spawnWave();
+    }
 
     // Animate game objects
     requestAnimFrame ( animate );
@@ -885,30 +895,30 @@
   }
 
 //---------------------------------------------------------------------
-// REQUEST THE ANIMATION FRAME
+// COLLISION DETECTION
 //---------------------------------------------------------------------
 
-function detectCollision() {
-  var objects = [];
-  game.quadTree.getAllObjects(objects);
+  function detectCollision() {
+    var objects = [];
+    game.quadTree.getAllObjects(objects);
 
-  for (var x = 0, len = objects.length; x < len; x++) {
-    game.quadTree.findObjects(obj = [], objects[x]);
+    for (var x = 0, len = objects.length; x < len; x++) {
+      game.quadTree.findObjects(obj = [], objects[x]);
 
-    for (y = 0, length = obj.length; y < length; y++) {
+      for (y = 0, length = obj.length; y < length; y++) {
 
-      // Collision Detection Algorithm
-      if (objects[x].collidableWith === obj[y].type &&
-        (objects[x].x < obj[y].x + obj[y].width &&
-           objects[x].x + objects[x].width > obj[y].x &&
-         objects[x].y < obj[y].y + obj[y].height &&
-         objects[x].y + objects[x].height > obj[y].y)) {
-        objects[x].isColliding = true;
-        obj[y].isColliding = true;
+        // Collision Detection Algorithm
+        if (objects[x].collidableWith === obj[y].type &&
+          (objects[x].x < obj[y].x + obj[y].width &&
+             objects[x].x + objects[x].width > obj[y].x &&
+           objects[x].y < obj[y].y + obj[y].height &&
+           objects[x].y + objects[x].height > obj[y].y)) {
+          objects[x].isColliding = true;
+          obj[y].isColliding = true;
+        }
       }
     }
-  }
-};
+  };
 
 //---------------------------------------------------------------------
 // KEY CODES
