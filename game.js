@@ -658,6 +658,9 @@
       }
 
       else {
+
+        // Score!
+        game.playerScore += 10;
         return true;
       }
 
@@ -688,6 +691,9 @@
  function Game(){
 
    this.init = function(){
+
+     // Keep track of score
+     this.playerScore = 0;
 
      // Get the canvas element.
      this.backgroundCanvas = document.getElementById('background');
@@ -781,6 +787,9 @@
 //---------------------------------------------------------------------
 
   function animate() {
+
+    // Show the score
+    document.getElementById('score').innerHTML = game.playerScore;
 
     // Insert objects into quadtree
     game.quadTree.clear();
