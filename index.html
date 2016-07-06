@@ -54,6 +54,16 @@
         color: ##FFD700
       }
 
+      .loading {
+        position: absolute;
+        top: 100px;
+        left: 210px;
+        color: #FF7F00;
+        font-family: Helvetica, sans-serif;
+        font-size: 30px;
+        cursor: default;
+      }
+
     </style>
   </head>
   <body>
@@ -80,6 +90,11 @@
       </p>
     </div>
 
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+      LOADING...
+      <p>Please wait</p>
+    </div>
 
     <!-- The JavaScript for the Game -->
     <script src="game.js"></script>
