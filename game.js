@@ -53,10 +53,10 @@
     };
 
     // Image Sources
-    this.background.src = "images/background.png";
-    this.spaceship.src = "images/ship.png";
+    this.background.src = "images/grass1.png";
+    this.spaceship.src = "images/tiniest_americans.png";
     this.bullet.src = "images/bullet.png";
-    this.enemy.src = "images/enemy.png";
+    this.enemy.src = "images/brit.gif";
     this.enemyBullet.src = "images/bullet_enemy.png";
   };
 
