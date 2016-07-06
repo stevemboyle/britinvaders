@@ -628,13 +628,14 @@
 
         }
 
-        // Redraw the ship.
-        if ( !this.isColliding ) {
-          this.draw();
-        } else {
-          this.alive = false;
-          game.gameOver();
-        }
+      }
+
+      // Redraw the ship.
+      if ( !this.isColliding ) {
+        this.draw();
+      } else {
+        this.alive = false;
+        game.gameOver();
       }
 
       // Pew pew!
