@@ -561,13 +561,20 @@
   function Ship() {
     this.speed = 3;
     this.bulletPool = new Pool(30);
-    this.bulletPool.init("bullet");
-
     var fireRate = 15;
     var counter = 0;
-
     this.collidableWith = "enemyBullet";
     this.type = "ship";
+
+    this.init = function(x, y, width, height) {
+      this.x = x;
+      this.y = y;
+      this.width = width;
+      this.height = height;
+      this.alive = true;
+      this.isColliding = false;
+      this.bulletPool.init("bullet");
+    };
 
     this.draw = function() {
       this.context.drawImage(imageRepository.spaceship, this.x, this.y);
@@ -624,8 +631,10 @@
         // Redraw the ship.
         if ( !this.isColliding ) {
           this.draw();
+        } else {
+          this.alive = false;
+          game.gameOver();
         }
-
       }
 
       // Pew pew!
@@ -860,6 +869,43 @@
      animate();
    };
 
+   // Restart
+   this.restart = function() {
+     this.gameOverAudio.pause();
+
+     document.getElementById("game-over").style.display = "none";
+     this.backgroundContext.clearRect(0, 0, this.backgroundCanvas.width,
+                                            this.backgroundCanvas.height);
+     this.shipContext.clearRect(0, 0, this.shipCanvas.width,
+                                      this.shipCanvas.height);
+     this.mainContext.clearRect(0, 0, this.mainCanvas.width,
+                                      this.mainCanvas.height);
+
+     this.quadTree.clear();
+
+     this.background.init(0, 0);
+     this.ship.init(this.shipStartX, this.shipStartY,
+                    imageRepository.spaceship.width,
+                    imageRepository.spaceship.height);
+     this.enemyPool.init("enemy");
+     this.spawnWave();
+     this.enemyBulletPool.init("enemyBullet");
+     this.playerScore = 0;
+     this.backgroundAudio.currentTime = 0;
+     this.backgroundAudio.play();
+
+     // GO!
+     this.start();
+   };
+
+   // Game Over
+   this.gameOver = function() {
+     this.backgroundAudio.pause();
+     this.gameOverAudio.currentTime = 0;
+     this.gameOverAudio.play();
+     document.getElementById("game-over").style.display = "block";
+   };
+
  }
 
 //---------------------------------------------------------------------
@@ -885,13 +931,17 @@
       game.spawnWave();
     }
 
+    console.log("ship alive? " + game.ship.alive);
+
     // Animate game objects
-    requestAnimFrame ( animate );
-    game.background.draw();
-    game.ship.move();
-    game.ship.bulletPool.animate();
-    game.enemyPool.animate();
-    game.enemyBulletPool.animate();
+    if (game.ship.alive) {
+  		requestAnimFrame( animate );
+  		game.background.draw();
+  		game.ship.move();
+  		game.ship.bulletPool.animate();
+  		game.enemyPool.animate();
+  		game.enemyBulletPool.animate();
+  	}
   }
 
 //---------------------------------------------------------------------
