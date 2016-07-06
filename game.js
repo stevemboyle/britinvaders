@@ -5,14 +5,8 @@
 
   var game = new Game();
 
-//---------------------------------------------------------------------
-// START THE GAME
-//---------------------------------------------------------------------
-
   function init() {
-    if ( game.init() ) {
-      game.start();
-    }
+    game.init();
   }
 
 //---------------------------------------------------------------------
@@ -400,7 +394,7 @@
 
 
 //---------------------------------------------------------------------
-// OUR POOL OF BULLETS
+// OUR OBJECT POOL
 //---------------------------------------------------------------------
 
   function Pool(maxSize) {
@@ -511,6 +505,56 @@
   }
 
 //---------------------------------------------------------------------
+// CHECK READY STATE
+//---------------------------------------------------------------------
+
+  function checkReadyState() {
+    if ( game.gameOverAudio.readyState === 4 &&
+         game.backgroundAudio.readyState === 4 ) {
+           window.clearInterval(game.checkAudio);
+          //  document.getElementById('loading').style.display = "none";
+           game.start();
+    }
+  }
+
+//---------------------------------------------------------------------
+// OUR SOUND POOL
+//---------------------------------------------------------------------
+
+  function SoundPool(maxSize) {
+    var size = maxSize;
+    var pool = [];
+    this.pool = pool;
+    var currentSound = 0;
+
+    this.init = function(object) {
+      if (object === "laser") {
+        for ( var i = 0; i < size; i++ ) {
+          var laser = new Audio("sounds/laser.wav");
+          laser.volume = .12;
+          laser.load();
+          pool[i] = laser;
+        }
+      }
+      else if (object === "explosion") {
+        for ( var i = 0; i < size; i++ ) {
+          var explosion = new Audio("sounds/explosion.wav");
+          explosion.volume = .1;
+          explosion.load();
+          pool[i] = explosion;
+        }
+      }
+    };
+
+    this.get = function() {
+      if ( pool[currentSound].currentTime === 0 || pool[currentSound].ended ) {
+        pool[currentSound].play();
+      }
+      currentSound = (currentSound + 1) % size;
+    };
+  }
+
+//---------------------------------------------------------------------
 // THE SHIP
 //---------------------------------------------------------------------
 
@@ -596,6 +640,9 @@
     this.fire = function() {
       this.bulletPool.getTwo( (this.x + 6), this.y, 3,
                               (this.x + 33), this.y, 3 );
+
+      // Make a cool noise!
+      game.laser.get();
     };
 
   }
@@ -661,6 +708,9 @@
 
         // Score!
         game.playerScore += 10;
+
+        // Boom!
+        game.explosion.get();
         return true;
       }
 
@@ -694,6 +744,31 @@
 
      // Keep track of score
      this.playerScore = 0;
+
+     // Audio: Laser
+     this.laser = new SoundPool(10);
+     this.laser.init("laser");
+
+     // Audio: Explosion
+     this.explosion = new SoundPool(20);
+     this.explosion.init("explosion");
+
+     // Audio: Background Audio
+     this.backgroundAudio = new Audio("sounds/kick_shock.wav");
+     this.backgroundAudio.loop = true;
+     this.backgroundAudio.volume = .25;
+     this.backgroundAudio.load();
+
+     // Audio: Game Over Audio
+     this.gameOverAudio = new Audio("sounds/game_over.wav");
+     this.gameOverAudio.loop = true;
+     this.gameOverAudio.volume = .25;
+     this.gameOverAudio.load();
+
+     // Check Audio
+     this.checkAudio = window.setInterval(function(){
+       checkReadyState()
+     }, 1000);
 
      // Get the canvas element.
      this.backgroundCanvas = document.getElementById('background');
@@ -777,6 +852,7 @@
    // Start the animation loop.
    this.start = function() {
      this.ship.draw();
+     this.backgroundAudio.play();
      animate();
    };
 
