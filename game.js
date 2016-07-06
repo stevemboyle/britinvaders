@@ -819,9 +819,9 @@
        // Initialize the ship
        this.ship = new Ship();
 
-       var shipStartX = this.shipCanvas.width / 2 - imageRepository.spaceship.width;
-       var shipStartY = this.shipCanvas.height / 4 * 3 + imageRepository.spaceship.height * 2;
-       this.ship.init(shipStartX, shipStartY,
+       this.shipStartX = this.shipCanvas.width / 2 - imageRepository.spaceship.width;
+       this.shipStartY = this.shipCanvas.height / 4 * 3 + imageRepository.spaceship.height * 2;
+       this.ship.init(this.shipStartX, this.shipStartY,
                       imageRepository.spaceship.width,
                       imageRepository.spaceship.height);
 
