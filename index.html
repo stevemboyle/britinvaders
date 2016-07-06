@@ -4,10 +4,22 @@
     <title>Galaxian</title>
     <style>
 
+      html {
+        background: url("https://yt3.ggpht.com/-FdvbIpi8ZiU/AAAAAAAAAAI/AAAAAAAAAAA/XxRgEvBFGgA/s900-c-k-no-rj-c0xffffff/photo.jpg");
+      }
+
+      #game {
+        width: 75vw;
+        height: 100vh;
+        margin: auto;
+      }
+
       canvas {
         position: absolute;
-        top: 0px;
-        left: 0px;
+        margin: auto;
+        width: 75vw;
+        /*top: 0px;
+        left: 0px;*/
         background: transparent;
       }
 
@@ -68,14 +80,16 @@
   </head>
   <body>
 
-    <!-- The Background -->
-    <canvas id="background" width="600" height="360"></canvas>
+    <div id="game">
 
-    <!-- The Enemy Ships and Bullets -->
-    <canvas id="main" width="600" height="360"></canvas>
+      <!-- The Background -->
+      <canvas id="background" width="600" height="360"></canvas>
 
-    <!-- The Player's Ship -->
-    <canvas id="ship" width="600" height="360"></canvas>
+      <!-- The Enemy Ships and Bullets -->
+      <canvas id="main" width="600" height="360"></canvas>
+
+      <!-- The Player's Ship -->
+      <canvas id="ship" width="600" height="360"></canvas>
 
     <!-- Score -->
     <div class="score">SCORE: <span id="score"></span></div>
@@ -95,6 +109,8 @@
       LOADING...
       <p>Please wait</p>
     </div>
+
+  </div>
 
     <!-- The JavaScript for the Game -->
     <script src="game.js"></script>
