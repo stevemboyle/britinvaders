@@ -931,8 +931,6 @@
       game.spawnWave();
     }
 
-    console.log("ship alive? " + game.ship.alive);
-
     // Animate game objects
     if (game.ship.alive) {
   		requestAnimFrame( animate );
