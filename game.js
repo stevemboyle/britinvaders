@@ -147,7 +147,7 @@
 
     // Move and draw the bullet until it moves off-screen.
     this.draw = function() {
-      this.context.clearRect(this.x, this.y, this.width, this.height);
+      this.context.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
       this.y -= this.speed;
 
       if ( this.isColliding ) {
@@ -213,6 +213,7 @@
   		width: 0,
   		height: 0
   	};
+
   	var objects = [];
   	this.nodes = [];
   	var level = lvl || 0;
@@ -410,10 +411,19 @@
     // Our pool
     var pool = [];
 
+    this.getPool = function() {
+      var object = [];
+      for ( var i = 0; i < size; i++ ) {
+        if ( pool[i].alive ) {
+          object.push(pool[i]);
+        }
+      }
+      return object;
+    };
+
     this.init = function(object) {
 
       if ( object === "bullet" ) {
-
         for ( var i = 0; i < size; i++ ) {
 
           // Initialize a new bullet.
@@ -462,16 +472,6 @@
 
       }
 
-    };
-
-    this.getPool = function() {
-      var object = [];
-      for ( var i = 0; i < size; i++ ) {
-        if ( pool[i].alive ) {
-          object.push(pool[i]);
-        }
-      }
-      return object;
     };
 
     // Gets the last item in the list.
@@ -585,7 +585,7 @@
       }
 
       // Pew pew!
-      if ( KEY_STATUS.space && counter >= fireRate ) {
+      if ( KEY_STATUS.space && counter >= fireRate  && !this.isColliding ) {
         this.fire();
         counter = 0;
       }
@@ -645,7 +645,7 @@
         this.speedX = -this.speed;
       }
 
-      if ( !this.Colliding ){
+      if ( !this.isColliding ){
         this.context.drawImage(imageRepository.enemy, this.x, this.y);
 
         // Every movement, there is a chance the enemy will shoot:
@@ -674,6 +674,7 @@
       this.speedX = 0;
       this.speedY = 0;
       this.alive = false;
+      this.isColliding = false;
     };
 
   }
